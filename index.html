@@ -387,12 +387,7 @@
                     'I': { dist: Infinity, parent: null, updated: false }
                 },
                 mstEdges: [],
-                explanation: {
-                    title: "Initial Setup (Mise en Place)",
-                    action: "Add F to tree, initialize all others to infinite distance",
-                    kitchen: "F is our main kitchen location. All other locations are 'not yet connected' to our supply network.",
-                    next: "We'll now scan F's adjacent vertices to find what's directly accessible."
-                }
+                
             },
             {
                 step: 1,
@@ -408,12 +403,7 @@
                     'I': { dist: 5, parent: 'F', updated: true }
                 },
                 mstEdges: [],
-                explanation: {
-                    title: "Scan F's Edges",
-                    action: "Update distances for I(5), A(7), E(6)",
-                    kitchen: "F connects directly to three suppliers: I at $5, E at $6, and A at $7. We update our price list.",
-                    next: "Select the minimum: I at distance 5. This is our best current deal."
-                }
+                
             },
             {
                 step: 2,
@@ -429,12 +419,7 @@
                     'I': { dist: 0, parent: 'F', updated: false }
                 },
                 mstEdges: [{ from: 'F', to: 'I', weight: 5 }],
-                explanation: {
-                    title: "Add I to Tree via F-I(5)",
-                    action: "Scan I's edges. Update E(6→2), add G(4), H(6)",
-                    kitchen: "Adding I to our network is like opening a new prep station. I offers E at $2 (better than F's $6!), plus access to G($4) and H($6).",
-                    next: "Select minimum fringe: E at distance 2. Cost optimization in action."
-                }
+                
             },
             {
                 step: 3,
@@ -453,12 +438,7 @@
                     { from: 'F', to: 'I', weight: 5 },
                     { from: 'I', to: 'E', weight: 2 }
                 ],
-                explanation: {
-                    title: "Add E to Tree via I-E(2)",
-                    action: "Scan E's edges. New connection to B(1)",
-                    kitchen: "E unlocks B at just $1—our cheapest connection yet! Like finding a bulk supplier with wholesale prices.",
-                    next: "Select B at distance 1. Always grab the best available deal."
-                }
+                
             },
             {
                 step: 4,
@@ -478,12 +458,7 @@
                     { from: 'I', to: 'E', weight: 2 },
                     { from: 'E', to: 'B', weight: 1 }
                 ],
-                explanation: {
-                    title: "Add B to Tree via E-B(1)",
-                    action: "Scan B's edges. Update H(6→3), add C(5)",
-                    kitchen: "B improves H's route from $6 to $3 (cost savings!) and gives access to C at $5. Supply chain optimization.",
-                    next: "Select H at distance 3. Building our network strategically."
-                }
+                
             },
             {
                 step: 5,
@@ -504,12 +479,7 @@
                     { from: 'E', to: 'B', weight: 1 },
                     { from: 'B', to: 'H', weight: 3 }
                 ],
-                explanation: {
-                    title: "Add H to Tree via B-H(3)",
-                    action: "Scan H's edges. Update C(5→2). G stays at 4 (H offers 7)",
-                    kitchen: "H improves C from $5 to $2. We DON'T update G because H's route ($7) is worse than I's ($4). H doesn't connect to D.",
-                    next: "Select C at distance 2. No path to D discovered yet."
-                }
+                
             },
             {
                 step: 6,
@@ -531,12 +501,7 @@
                     { from: 'B', to: 'H', weight: 3 },
                     { from: 'H', to: 'C', weight: 2 }
                 ],
-                explanation: {
-                    title: "Add C to Tree via H-C(2)",
-                    action: "Scan C's edges. Discover D(1) via C-D edge",
-                    kitchen: "C unlocks D at distance 1. C's other edges (H, B) already in tree.",
-                    next: "Select D at distance 1. Cheapest fringe vertex."
-                }
+                
             },
             {
                 step: 7,
@@ -559,12 +524,7 @@
                     { from: 'H', to: 'C', weight: 2 },
                     { from: 'C', to: 'D', weight: 1 }
                 ],
-                explanation: {
-                    title: "Add D to Tree via C-D(1)",
-                    action: "Scan D's edges. Update A(7→2). G stays 4 (D offers 6)",
-                    kitchen: "D improves A from $7 to $2 (via D-A edge). D-G costs 6, but I-G at 4 is still better.",
-                    next: "Select A at distance 2."
-                }
+                
             },
             {
                 step: 8,
@@ -588,12 +548,7 @@
                     { from: 'C', to: 'D', weight: 1 },
                     { from: 'D', to: 'A', weight: 2 }
                 ],
-                explanation: {
-                    title: "Add A to Tree via D-A(2)",
-                    action: "Scan A's edges. Update G(4→3). Only G remains!",
-                    kitchen: "A improves G's route from $4 (via I) to $3 (via A). One vertex left.",
-                    next: "Select G at distance 3. Complete the network."
-                }
+                
             },
             {
                 step: 9,
@@ -618,12 +573,7 @@
                     { from: 'D', to: 'A', weight: 2 },
                     { from: 'A', to: 'G', weight: 3 }
                 ],
-                explanation: {
-                    title: "Add G to Tree via A-G(3) - COMPLETE!",
-                    action: "All vertices now in tree. MST construction finished.",
-                    kitchen: "Supply network complete! Connected all locations via cheapest routes. Total cost: 19 (not 18 - we had the wrong edge before).",
-                    next: "Algorithm complete. MST edges: F-I(5), I-E(2), E-B(1), B-H(3), H-C(2), C-D(1), D-A(2), A-G(3) = 19"
-                }
+                
             }
         ];
         
