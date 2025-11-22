@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prim's Algorithm - Interactive Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            color: #212121;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .controls {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        button:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .step-info {
+            background: #e8f5e9;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #1b5e20;
+            font-weight: bold;
+            border: 2px solid #2e7d32;
+        }
+        
+        .main-content {
+            display: block;
+            margin-bottom: 20px;
+        }
+        
+        .panel {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .panel h2 {
+            color: #1b5e20;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 3px solid #2e7d32;
+            padding-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        #graph-canvas {
+            width: 100%;
+            height: 700px;
+            background: #fafafa;
+            border: 3px solid #bdbdbd;
+            border-radius: 6px;
+        }
+        
+        .data-structures {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border: 2px solid #bdbdbd;
+        }
+        
+        th {
+            background: #2e7d32;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1b5e20;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            background: #ffffff;
+        }
+        
+        tr:nth-child(even) td {
+            background: #f5f5f5;
+        }
+        
+        .in-tree {
+            background: #c8e6c9 !important;
+            color: #1b5e20;
+            font-weight: bold;
+            border: 2px solid #2e7d32 !important;
+        }
+        
+        .in-fringe {
+            background: #bbdefb !important;
+            color: #0d47a1;
+            font-weight: bold;
+            border: 2px solid #1976d2 !important;
+        }
+        
+        .updated {
+            background: #fff9c4 !important;
+            color: #f57f17;
+            font-weight: bold;
+            animation: pulse 0.5s;
+            border: 2px solid #fbc02d !important;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .infinity {
+            color: #9e9e9e;
+            font-weight: bold;
+        }
+        
+        .explanation {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2e7d32;
+            margin-top: 15px;
+            line-height: 1.6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .explanation h3 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .explanation p {
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #212121;
+        }
+        
+        .mst-edges {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 2px solid #c5e1a5;
+        }
+        
+        .mst-edges h3 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .edge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .edge-badge {
+            background: #2e7d32;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 2px solid #1b5e20;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .legend {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #212121;
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid #212121;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .color-tree { background: #2e7d32; }
+        .color-fringe { background: #1976d2; }
+        .color-unexplored { background: #757575; }
+        .color-mst-edge { background: #2e7d32; }
+        .color-regular-edge { background: #9e9e9e; }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PRIM'S ALGORITHM - STEP-BY-STEP EXECUTION</h1>
+        <div class="subtitle">Starting from Vertex F | Watch data structures evolve in real-time</div>
+        
+        <div class="controls">
+            <div class="button-group">
+                <button id="prevBtn" onclick="previousStep()">◄ Previous</button>
+                <button id="nextBtn" onclick="nextStep()">Next ►</button>
+                <button onclick="reset()">⟲ Reset</button>
+            </div>
+            <div class="step-info">
+                <span id="stepCounter">Step 0 / 9</span>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color color-tree"></div>
+                <span>In Tree</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-fringe"></div>
+                <span>In Fringe</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-unexplored"></div>
+                <span>Unexplored</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-mst-edge"></div>
+                <span>MST Edge</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-regular-edge"></div>
+                <span>Regular Edge</span>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2>GRAPH VISUALIZATION</h2>
+                <canvas id="graph-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('graph-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas resolution
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+        
+        // Graph definition (from homework) - spread out for better visibility
+        const vertices = {
+            'A': { x: 280, y: 80 },
+            'D': { x: 420, y: 80 },
+            'G': { x: 350, y: 180 },
+            'F': { x: 150, y: 280 },
+            'I': { x: 280, y: 280 },
+            'H': { x: 420, y: 280 },
+            'C': { x: 550, y: 280 },
+            'E': { x: 280, y: 450 },
+            'B': { x: 420, y: 450 }
+        };
+        
+        const edges = [
+            { from: 'A', to: 'D', weight: 2 },
+            { from: 'A', to: 'G', weight: 3 },
+            { from: 'A', to: 'F', weight: 7 },
+            { from: 'D', to: 'G', weight: 6 },
+            { from: 'D', to: 'C', weight: 1 },
+            { from: 'G', to: 'I', weight: 4 },
+            { from: 'G', to: 'H', weight: 7 },
+            { from: 'F', to: 'I', weight: 5 },
+            { from: 'F', to: 'E', weight: 6 },
+            { from: 'I', to: 'H', weight: 6 },
+            { from: 'I', to: 'E', weight: 2 },
+            { from: 'H', to: 'C', weight: 2 },
+            { from: 'H', to: 'B', weight: 3 },
+            { from: 'E', to: 'B', weight: 1 },
+            { from: 'B', to: 'C', weight: 5 }
+        ];
+        
+        // Algorithm steps
+        const steps = [
+            {
+                step: 0,
+                tree: ['F'],
+                fringe: {
+                    'A': { dist: Infinity, parent: null, updated: false },
+                    'B': { dist: Infinity, parent: null, updated: false },
+                    'C': { dist: Infinity, parent: null, updated: false },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: Infinity, parent: null, updated: false },
+                    'G': { dist: Infinity, parent: null, updated: false },
+                    'H': { dist: Infinity, parent: null, updated: false },
+                    'I': { dist: Infinity, parent: null, updated: false }
+                },
+                mstEdges: [],
+                explanation: {
+                    title: "Initial Setup (Mise en Place)",
+                    action: "Add F to tree, initialize all others to infinite distance",
+                    kitchen: "F is our main kitchen location. All other locations are 'not yet connected' to our supply network.",
+                    next: "We'll now scan F's adjacent vertices to find what's directly accessible."
+                }
+            },
+            {
+                step: 1,
+                tree: ['F'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: true },
+                    'B': { dist: Infinity, parent: null, updated: false },
+                    'C': { dist: Infinity, parent: null, updated: false },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: 6, parent: 'F', updated: true },
+                    'G': { dist: Infinity, parent: null, updated: false },
+                    'H': { dist: Infinity, parent: null, updated: false },
+                    'I': { dist: 5, parent: 'F', updated: true }
+                },
+                mstEdges: [],
+                explanation: {
+                    title: "Scan F's Edges",
+                    action: "Update distances for I(5), A(7), E(6)",
+                    kitchen: "F connects directly to three suppliers: I at $5, E at $6, and A at $7. We update our price list.",
+                    next: "Select the minimum: I at distance 5. This is our best current deal."
+                }
+            },
+            {
+                step: 2,
+                tree: ['F', 'I'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: false },
+                    'B': { dist: Infinity, parent: null, updated: false },
+                    'C': { dist: Infinity, parent: null, updated: false },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: 2, parent: 'I', updated: true },
+                    'G': { dist: 4, parent: 'I', updated: true },
+                    'H': { dist: 6, parent: 'I', updated: true },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [{ from: 'F', to: 'I', weight: 5 }],
+                explanation: {
+                    title: "Add I to Tree via F-I(5)",
+                    action: "Scan I's edges. Update E(6→2), add G(4), H(6)",
+                    kitchen: "Adding I to our network is like opening a new prep station. I offers E at $2 (better than F's $6!), plus access to G($4) and H($6).",
+                    next: "Select minimum fringe: E at distance 2. Cost optimization in action."
+                }
+            },
+            {
+                step: 3,
+                tree: ['F', 'I', 'E'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: false },
+                    'B': { dist: 1, parent: 'E', updated: true },
+                    'C': { dist: Infinity, parent: null, updated: false },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 4, parent: 'I', updated: false },
+                    'H': { dist: 6, parent: 'I', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 }
+                ],
+                explanation: {
+                    title: "Add E to Tree via I-E(2)",
+                    action: "Scan E's edges. New connection to B(1)",
+                    kitchen: "E unlocks B at just $1—our cheapest connection yet! Like finding a bulk supplier with wholesale prices.",
+                    next: "Select B at distance 1. Always grab the best available deal."
+                }
+            },
+            {
+                step: 4,
+                tree: ['F', 'I', 'E', 'B'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: false },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 5, parent: 'B', updated: true },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 4, parent: 'I', updated: false },
+                    'H': { dist: 3, parent: 'B', updated: true },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 }
+                ],
+                explanation: {
+                    title: "Add B to Tree via E-B(1)",
+                    action: "Scan B's edges. Update H(6→3), add C(5)",
+                    kitchen: "B improves H's route from $6 to $3 (cost savings!) and gives access to C at $5. Supply chain optimization.",
+                    next: "Select H at distance 3. Building our network strategically."
+                }
+            },
+            {
+                step: 5,
+                tree: ['F', 'I', 'E', 'B', 'H'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: false },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 2, parent: 'H', updated: true },
+                    'D': { dist: Infinity, parent: null, updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 4, parent: 'I', updated: false },
+                    'H': { dist: 0, parent: 'B', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 },
+                    { from: 'B', to: 'H', weight: 3 }
+                ],
+                explanation: {
+                    title: "Add H to Tree via B-H(3)",
+                    action: "Scan H's edges. Update C(5→2). G stays at 4 (H offers 7)",
+                    kitchen: "H improves C from $5 to $2. We DON'T update G because H's route ($7) is worse than I's ($4). H doesn't connect to D.",
+                    next: "Select C at distance 2. No path to D discovered yet."
+                }
+            },
+            {
+                step: 6,
+                tree: ['F', 'I', 'E', 'B', 'H', 'C'],
+                fringe: {
+                    'A': { dist: 7, parent: 'F', updated: false },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 0, parent: 'H', updated: false },
+                    'D': { dist: 1, parent: 'C', updated: true },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 4, parent: 'I', updated: false },
+                    'H': { dist: 0, parent: 'B', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 },
+                    { from: 'B', to: 'H', weight: 3 },
+                    { from: 'H', to: 'C', weight: 2 }
+                ],
+                explanation: {
+                    title: "Add C to Tree via H-C(2)",
+                    action: "Scan C's edges. Discover D(1) via C-D edge",
+                    kitchen: "C unlocks D at distance 1. C's other edges (H, B) already in tree.",
+                    next: "Select D at distance 1. Cheapest fringe vertex."
+                }
+            },
+            {
+                step: 7,
+                tree: ['F', 'I', 'E', 'B', 'H', 'C', 'D'],
+                fringe: {
+                    'A': { dist: 2, parent: 'D', updated: true },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 0, parent: 'H', updated: false },
+                    'D': { dist: 0, parent: 'C', updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 4, parent: 'I', updated: false },
+                    'H': { dist: 0, parent: 'B', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 },
+                    { from: 'B', to: 'H', weight: 3 },
+                    { from: 'H', to: 'C', weight: 2 },
+                    { from: 'C', to: 'D', weight: 1 }
+                ],
+                explanation: {
+                    title: "Add D to Tree via C-D(1)",
+                    action: "Scan D's edges. Update A(7→2). G stays 4 (D offers 6)",
+                    kitchen: "D improves A from $7 to $2 (via D-A edge). D-G costs 6, but I-G at 4 is still better.",
+                    next: "Select A at distance 2."
+                }
+            },
+            {
+                step: 8,
+                tree: ['F', 'I', 'E', 'B', 'H', 'C', 'D', 'A'],
+                fringe: {
+                    'A': { dist: 0, parent: 'D', updated: false },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 0, parent: 'H', updated: false },
+                    'D': { dist: 0, parent: 'C', updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 3, parent: 'A', updated: true },
+                    'H': { dist: 0, parent: 'B', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 },
+                    { from: 'B', to: 'H', weight: 3 },
+                    { from: 'H', to: 'C', weight: 2 },
+                    { from: 'C', to: 'D', weight: 1 },
+                    { from: 'D', to: 'A', weight: 2 }
+                ],
+                explanation: {
+                    title: "Add A to Tree via D-A(2)",
+                    action: "Scan A's edges. Update G(4→3). Only G remains!",
+                    kitchen: "A improves G's route from $4 (via I) to $3 (via A). One vertex left.",
+                    next: "Select G at distance 3. Complete the network."
+                }
+            },
+            {
+                step: 9,
+                tree: ['F', 'I', 'E', 'B', 'H', 'C', 'D', 'A', 'G'],
+                fringe: {
+                    'A': { dist: 0, parent: 'D', updated: false },
+                    'B': { dist: 0, parent: 'E', updated: false },
+                    'C': { dist: 0, parent: 'H', updated: false },
+                    'D': { dist: 0, parent: 'C', updated: false },
+                    'E': { dist: 0, parent: 'I', updated: false },
+                    'G': { dist: 0, parent: 'A', updated: false },
+                    'H': { dist: 0, parent: 'B', updated: false },
+                    'I': { dist: 0, parent: 'F', updated: false }
+                },
+                mstEdges: [
+                    { from: 'F', to: 'I', weight: 5 },
+                    { from: 'I', to: 'E', weight: 2 },
+                    { from: 'E', to: 'B', weight: 1 },
+                    { from: 'B', to: 'H', weight: 3 },
+                    { from: 'H', to: 'C', weight: 2 },
+                    { from: 'C', to: 'D', weight: 1 },
+                    { from: 'D', to: 'A', weight: 2 },
+                    { from: 'A', to: 'G', weight: 3 }
+                ],
+                explanation: {
+                    title: "Add G to Tree via A-G(3) - COMPLETE!",
+                    action: "All vertices now in tree. MST construction finished.",
+                    kitchen: "Supply network complete! Connected all locations via cheapest routes. Total cost: 19 (not 18 - we had the wrong edge before).",
+                    next: "Algorithm complete. MST edges: F-I(5), I-E(2), E-B(1), B-H(3), H-C(2), C-D(1), D-A(2), A-G(3) = 19"
+                }
+            }
+        ];
+        
+        let currentStep = 0;
+        
+        function drawGraph() {
+            const step = steps[currentStep];
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw edges
+            edges.forEach(edge => {
+                const isMSTEdge = step.mstEdges.some(e => 
+                    (e.from === edge.from && e.to === edge.to) || 
+                    (e.from === edge.to && e.to === edge.from)
+                );
+                
+                const fromPos = vertices[edge.from];
+                const toPos = vertices[edge.to];
+                
+                // Draw shadow for depth
+                ctx.beginPath();
+                ctx.moveTo(fromPos.x + 2, fromPos.y + 2);
+                ctx.lineTo(toPos.x + 2, toPos.y + 2);
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = isMSTEdge ? 5 : 3;
+                ctx.stroke();
+                
+                // Draw main edge
+                ctx.beginPath();
+                ctx.moveTo(fromPos.x, fromPos.y);
+                ctx.lineTo(toPos.x, toPos.y);
+                ctx.strokeStyle = isMSTEdge ? '#2e7d32' : '#9e9e9e';
+                ctx.lineWidth = isMSTEdge ? 5 : 2;
+                ctx.stroke();
+                
+                // Draw weight label with background - offset from edge
+                const midX = (fromPos.x + toPos.x) / 2;
+                const midY = (fromPos.y + toPos.y) / 2;
+                
+                // Calculate perpendicular offset to move label away from edge
+                const dx = toPos.x - fromPos.x;
+                const dy = toPos.y - fromPos.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const offsetX = (-dy / length) * 20; // Perpendicular offset
+                const offsetY = (dx / length) * 20;
+                
+                const labelX = midX + offsetX;
+                const labelY = midY + offsetY;
+                
+                // White background for weight
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = isMSTEdge ? '#2e7d32' : '#757575';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(labelX - 15, labelY - 12, 30, 24, 4);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Weight text
+                ctx.fillStyle = isMSTEdge ? '#1b5e20' : '#424242';
+                ctx.font = 'bold 14px Courier New';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(edge.weight, labelX, labelY);
+            });
+            
+            // Draw vertices
+            Object.keys(vertices).forEach(vertex => {
+                const pos = vertices[vertex];
+                const isInTree = step.tree.includes(vertex);
+                const isInFringe = !isInTree && step.fringe[vertex] && step.fringe[vertex].dist !== Infinity;
+                
+                // Shadow
+                ctx.beginPath();
+                ctx.arc(pos.x + 3, pos.y + 3, 28, 0, 2 * Math.PI);
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fill();
+                
+                // Outer ring
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 28, 0, 2 * Math.PI);
+                ctx.fillStyle = isInTree ? '#2e7d32' : (isInFringe ? '#1976d2' : '#757575');
+                ctx.fill();
+                
+                // Inner circle (white background for letter)
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 22, 0, 2 * Math.PI);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.strokeStyle = isInTree ? '#1b5e20' : (isInFringe ? '#0d47a1' : '#424242');
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Vertex label
+                ctx.fillStyle = isInTree ? '#1b5e20' : (isInFringe ? '#0d47a1' : '#424242');
+                ctx.font = 'bold 20px Courier New';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(vertex, pos.x, pos.y);
+                
+                // Distance label (if in fringe)
+                if (isInFringe) {
+                    const dist = step.fringe[vertex].dist;
+                    
+                    // Background for distance
+                    ctx.fillStyle = '#fff9c4';
+                    ctx.strokeStyle = '#f57f17';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    const textWidth = ctx.measureText(`d:${dist}`).width;
+                    ctx.roundRect(pos.x - textWidth/2 - 6, pos.y + 32, textWidth + 12, 20, 4);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Distance text
+                    ctx.fillStyle = '#f57f17';
+                    ctx.font = 'bold 12px Courier New';
+                    ctx.fillText(`d:${dist}`, pos.x, pos.y + 42);
+                }
+            });
+        }
+        
+        function updateUI() {
+            document.getElementById('stepCounter').textContent = `Step ${currentStep} / 9`;
+            document.getElementById('prevBtn').disabled = currentStep === 0;
+            document.getElementById('nextBtn').disabled = currentStep === steps.length - 1;
+            
+            drawGraph();
+        }
+        
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateUI();
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateUI();
+            }
+        }
+        
+        function reset() {
+            currentStep = 0;
+            updateUI();
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextStep();
+            if (e.key === 'ArrowLeft') previousStep();
+            if (e.key === 'r' || e.key === 'R') reset();
+        });
+        
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>
